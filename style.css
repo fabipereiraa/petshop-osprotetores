@@ -1,0 +1,93 @@
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+body {
+font-family: Arial, sans-serif;
+background: linear-gradient(135deg, #f64302 0%, #ff8a50 50%, #ffd180 100%);/*Adicionar cores em degrade*/
+padding: 20px;
+min-height: 100vh;
+}
+.container {
+max-width: 800px;
+margin: 0 auto;
+background: rgb(241, 241, 5);
+border-radius: 10px;
+padding: 20px;
+box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+header {
+text-align: center;
+margin-bottom: 20px;
+}
+h1 {
+color: #046ff1;
+margin-bottom: 5px;
+}
+.subtitle {
+color: #666;
+font-size: 14px;
+}
+.cards-info {
+display: flex;
+gap: 15px;
+margin-bottom: 20px;
+}
+.card {
+flex: 1;
+background: #bbdefb;/*Alteracao na cor*/
+padding: 15px;
+border-radius: 8px;
+text-align: center;
+}
+.card h3 {
+font-size: 14px;
+margin-bottom: 5px;
+color: #333;
+}
+.numero {
+font-size: 24px;
+font-weight: bold;
+color: #1565c0;
+}
+.area-resultados {
+background: #a9a6a6;
+padding: 20px;
+border-radius: 8px;
+border-left: 4px solid #23ff06;
+min-height: 100px;
+margin-bottom: 20px;
+}
+.botoes {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+gap: 10px;
+}
+button {
+padding: 12px;
+background: #1565c0;
+color: white;
+border: none;
+border-radius: 6px;
+cursor: pointer;
+font-size: 14px;
+}
+button:hover {
+background: #0d47a1;
+}
+.animal-card {
+background: #e8f5e8;
+padding: 15px;
+margin: 10px 0;
+border-radius: 6px;
+border-left: 4px solid #4caf50;
+}
+.erro-card {
+background: #ffebee;
+padding: 15px;
+margin: 10px 0;
+border-radius: 6px;
+border-left: 4px solid #f44336;
+}
