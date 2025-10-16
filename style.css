@@ -5,30 +5,50 @@ box-sizing: border-box;
 }
 body {
 font-family: Arial, sans-serif;
-background: linear-gradient(135deg, #f64302 0%, #ff8a50 50%, #ffd180 100%);/*Adicionar cores em degrade*/
-padding: 20px;
-min-height: 100vh;
+	/* imagem de fundo principal com fallback para degradê */
+	/* background principal: usa image-set para suportar @2x quando disponível */
+	background-image: image-set(
+		url("img/papel-de-parede-pets-cachorro-cachorrinhos-autocolante-papel-de-parede-vintage.webp") 1x
+		/*, url("img/desenho-plano-com-impressoes-de-patas-de-fundo_23-2151163102@2x.jpg") 2x */
+	), linear-gradient(135deg, #f64302 0%, #ff8a50 50%, #ffd180 100%); /* imagem, fallback degradê */
+	background-size: cover, cover; /* imagem cobre a tela */
+	background-position: center center;
+	background-repeat: no-repeat, no-repeat;
+	/* opcional: fixa o fundo ao rolar a página */
+	background-attachment: fixed;
+	padding: 20px;
+	min-height: 100vh;
+	color: #222; /* garante contraste do texto sobre a imagem */
+}
+
+/* Se você adicionar uma imagem @2x com o sufixo @2x (mesmo nome + @2x antes da extensão), esta media query a usará em dispositivos retina */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body {
+    /* descomente e ajuste o caminho abaixo se adicionar a imagem @2x */
+    /* background-image: url("img/desenho-plano-com-impressoes-de-patas-de-fundo_23-2151163102@2x.jpg"), linear-gradient(135deg, #f64302 0%, #ff8a50 50%, #ffd180 100%); */
+		/* background-size ainda é cover */
+		background-size: cover, cover;
+  }
 }
 .container {
 max-width: 800px;
 margin: 0 auto;
-background: rgb(241, 241, 5);
-border-radius: 10px;
+background: #ff9a0c;
+border-radius: 30px;
 padding: 20px;
-box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
+box-shadow: 10px 10px 8px rgb(83, 255, 4);}
 
 header {
 text-align: center;
 margin-bottom: 20px;
 }
 h1 {
-color: #046ff1;
-margin-bottom: 5px;
+color: #185d05fc;
+margin-bottom: 10px;
 }
 .subtitle {
-color: #666;
-font-size: 14px;
+color: #000000;
+font-size: 18px;
 }
 .cards-info {
 display: flex;
