@@ -48,7 +48,9 @@
                     <h3>Animais Cadastrados</h3>
                     <!-- Título do card (nível 3) descrevendo o dado exibido -->
 
-                    <span class="numero" id="total-animais">20</span>
+                    <div id="painel-animais">
+                        <span class="numero" id="total-animais">0</span>
+                    </div>
                     <!-- Valor mostrado; o id permite que o JavaScript atualize dinamicamente -->
                 </div>
 
@@ -73,22 +75,19 @@
             <section class="botoes">
                 <!-- Seção que agrupa os botões de ação do usuário -->
 
-                <button id="btn-tipos" aria-label="Mostrar tipos básicos">1. Tipos Básicos</button>
+                <button id="btn-tipos" aria-label="Mostrar tipos de serviços">1. Tipo de Serviços</button>
                 <!-- Botão 1:
                      - id para o JS manipular
                      - aria-label fornece descrição acessível para leitores de tela -->
 
-                <button id="btn-animais" aria-label="Mostrar exemplo de animais">2. Exemplo Animais</button>
-                <!-- Botão 2: id e aria-label para seleção e acessibilidade -->
+                <button id="btn-animais" aria-label="Lista de animais">2. Lista de Animais</button>
 
-                <button id="btn-funcoes" aria-label="Testar funções do sistema">3. Testar Funções</button>
-                <!-- Botão 3: usado para acionar testes das funções JS -->
+                <button id="btn-cadastrar" aria-label="Cadastrar novo animal">3. Cadastrar Animal</button>
 
-                <button id="btn-erros" aria-label="Ver erros de exemplo">4. Ver Erros</button>
-                <!-- Botão 4: pode exibir exemplos de erros ou logs -->
+                <button id="btn-agendar-servico" aria-label="Agendar serviço">4. Agendar Serviço</button>
 
-                <button id="btn-cadastrar" aria-label="Cadastrar novo animal">5. Cadastrar Animal</button>
-                <!-- Botão 5: normalmente abre formulário ou inicia fluxo de cadastro -->
+                <button id="btn-lista-servicos" aria-label="Lista de serviços">5. Lista de Serviços</button>
+                <!-- Substituí botões de teste/erros por agendamento/lista de serviços -->
             </section>
         </main>
 

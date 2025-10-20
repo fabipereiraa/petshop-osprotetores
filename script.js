@@ -21,9 +21,49 @@ var Petshop;
     Petshop.criarAnimal = criarAnimal;
     function agendarServico(servico) {
         Petshop.servicos.push(servico);
+        try {
+            atualizarPainelServicos();
+        }
+        catch (e) { }
+        try {
+            saveState();
+        }
+        catch (e) { }
         return `✅ Serviço de ${servico.tipo} agendado! Preço: R$ ${servico.preco}`;
     }
     Petshop.agendarServico = agendarServico;
+    const STORAGE_KEY = 'petshop_state_v1';
+    function saveState() {
+        const state = { animais: Petshop.animais, servicos: Petshop.servicos, tiposServico: Petshop.tiposServico };
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+        catch (e) {
+            console.warn('Não foi possível salvar estado:', e);
+        }
+    }
+    Petshop.saveState = saveState;
+    function loadState() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw)
+                return;
+            const parsed = JSON.parse(raw);
+            if (parsed.animais && Array.isArray(parsed.animais)) {
+                Petshop.animais = parsed.animais;
+            }
+            if (parsed.servicos && Array.isArray(parsed.servicos)) {
+                Petshop.servicos = parsed.servicos;
+            }
+            if (parsed.tiposServico && Array.isArray(parsed.tiposServico)) {
+                Petshop.tiposServico = parsed.tiposServico;
+            }
+        }
+        catch (e) {
+            console.warn('Não foi possível carregar estado:', e);
+        }
+    }
+    Petshop.loadState = loadState;
     function calcularPrecoTotal() {
         return Petshop.servicos.reduce((acc, s) => acc + s.preco, 0);
     }
@@ -36,6 +76,10 @@ var Petshop;
         const animal = Petshop.animais.find(a => a.id === idAnimal);
         if (animal) {
             animal.vacinado = true;
+            try {
+                saveState();
+            }
+            catch (e) { }
             return `✅ ${animal.nome} foi vacinado com sucesso!`;
         }
         return "❌ Animal não encontrado!";
@@ -45,25 +89,13 @@ var Petshop;
         return Petshop.animais.find(a => a.nome.toLowerCase() === nome.toLowerCase());
     }
     Petshop.buscarAnimalPorNome = buscarAnimalPorNome;
-    function testarFuncoes() {
-        const resultado = document.getElementById('resultado');
-        if (!resultado)
-            return;
-        const novoAnimal = criarAnimal("Thor", "cachorro", 2020, 12.5);
-        Petshop.animais.push(novoAnimal);
-        const novoServico = { id: Date.now(), tipo: "banho", animalId: novoAnimal.id, preco: 45.00, concluido: false };
-        const mensagemServico = agendarServico(novoServico);
-        resultado.innerHTML = `
-            <div class="animal-card">
-                <h3>🧪 Teste das Funções Principais</h3>
-                <p><strong>Animal Criado:</strong> ${novoAnimal.nome} - ${novoAnimal.idade} anos</p>
-                <p><strong>Serviço:</strong> ${mensagemServico}</p>
-                <p><strong>Preço Total:</strong> R$ ${calcularPrecoTotal()}</p>
-                <p><strong>Animais Vacinados:</strong> ${filtrarAnimaisVacinados().length}</p>
-            </div>
-        `;
+    function atualizarPainelAnimais() {
+        const totalEl = document.getElementById('total-animais');
+        if (totalEl) {
+            totalEl.textContent = String(Petshop.animais.length);
+        }
     }
-    Petshop.testarFuncoes = testarFuncoes;
+    Petshop.atualizarPainelAnimais = atualizarPainelAnimais;
     function mostrarAnimais() {
         const resultado = document.getElementById('resultado');
         if (!resultado)
@@ -99,49 +131,153 @@ var Petshop;
             const animal = Petshop.animais.find(a => a.id === servico.animalId);
             const animalNome = animal ? animal.nome : "Animal não encontrado";
             html += `
-                <div class="servico-item">
-                    <h4>${servico.tipo} - R$ ${servico.preco}</h4>
+                <div class="servico-item" data-servico-id="${servico.id}">
+                    <h4>${servico.tipo} - R$ ${servico.preco.toFixed(2)}</h4>
                     <p><strong>Animal:</strong> ${animalNome} | <strong>Status:</strong> ${servico.concluido ? '✅ Concluído' : '⏳ Pendente'}</p>
+                    ${servico.concluido ? '' : `<button class="btn-confirm" data-id="${servico.id}">Confirmar</button>`}
                 </div>
             `;
         });
         html += `<p><strong>Total:</strong> ${Petshop.servicos.length} serviços | <strong>Valor Total:</strong> R$ ${calcularPrecoTotal()}</p></div>`;
         resultado.innerHTML = html;
+        const buttons = resultado.querySelectorAll('.btn-confirm');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', (ev) => {
+                const target = ev.currentTarget;
+                const idStr = target.getAttribute('data-id');
+                if (!idStr)
+                    return;
+                const id = parseInt(idStr, 10);
+                confirmarServico(id);
+            });
+        });
     }
     Petshop.mostrarServicos = mostrarServicos;
-    function mostrarErros() {
+    function confirmarServico(idServico) {
+        const serv = Petshop.servicos.find(s => s.id === idServico);
+        if (!serv)
+            return;
+        serv.concluido = true;
+        try {
+            const tipoLower = (serv.tipo || '').toLowerCase();
+            if (tipoLower.indexOf('vac') !== -1) {
+                const animal = Petshop.animais.find(a => a.id === serv.animalId);
+                if (animal && !animal.vacinado) {
+                    animal.vacinado = true;
+                }
+            }
+        }
+        catch (e) { }
+        try {
+            saveState();
+        }
+        catch (e) { }
+        mostrarServicos();
+        try {
+            atualizarPainelServicos();
+        }
+        catch (e) { }
+        try {
+            atualizarPainelAnimais();
+        }
+        catch (e) { }
+    }
+    Petshop.confirmarServico = confirmarServico;
+    function atualizarPainelServicos() {
+        const el = document.getElementById('total-servicos');
+        if (el)
+            el.textContent = String(Petshop.servicos.length);
+    }
+    Petshop.atualizarPainelServicos = atualizarPainelServicos;
+    function agendarServicoFormulario() {
         const resultado = document.getElementById('resultado');
         if (!resultado)
             return;
+        let options = '';
+        Petshop.animais.forEach(a => { options += `<option value="${a.id}">${a.nome} (${a.especie})</option>`; });
         resultado.innerHTML = `
-            <div class="erro-card">
-                <h3>⚠️ Erros que o TypeScript Previne</h3>
-                <p>Exemplos de erros detectáveis pelo TypeScript.</p>
+            <div class="animal-card">
+                <h3>🗓️ Agendar Serviço</h3>
+                <form id="form-servico">
+                    <label>Animal:<br><select id="select-animal">${options}</select></label><br>
+                    <label>Tipo de Serviço:<br><select id="select-tipo">${Petshop.tiposServico.map(t => `<option value="${t}">${t}</option>`).join('')}</select></label><br>
+                    <label>Preço (R$):<br><input type="number" id="preco-servico" step="0.01" value="45.00" required></label><br>
+                    <button type="submit">Agendar</button>
+                </form>
             </div>
         `;
+        const form = document.getElementById('form-servico');
+        if (!form)
+            return;
+        form.addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            const animalId = parseInt(document.getElementById('select-animal').value, 10);
+            const tipo = document.getElementById('select-tipo').value;
+            const preco = parseFloat(document.getElementById('preco-servico').value);
+            if (Number.isNaN(animalId) || !tipo || Number.isNaN(preco)) {
+                alert('Preencha os campos corretamente.');
+                return;
+            }
+            const novo = { id: Date.now(), tipo, animalId, preco, concluido: false };
+            agendarServico(novo);
+            atualizarPainelAnimais();
+            resultado.innerHTML = `<div class="animal-card"><h3>✅ Serviço agendado!</h3><p>Serviço de ${tipo} para o animal ID ${animalId} agendado.</p></div>`;
+            atualizarPainelAnimais();
+        });
     }
-    Petshop.mostrarErros = mostrarErros;
+    Petshop.agendarServicoFormulario = agendarServicoFormulario;
     function cadastrarAnimal() {
         const resultado = document.getElementById('resultado');
         if (!resultado)
             return;
-        resultado.innerHTML = `<div class="animal-card"><h3>➕ Cadastrando Novo Animal...</h3><p>Aguarde 2 segundos...</p></div>`;
-        setTimeout(() => {
-            const novoAnimal = criarAnimal("Luna", "gato", 2023, 3.2);
-            Petshop.animais.push(novoAnimal);
-            resultado.innerHTML = `
-                <div class="animal-card">
-                    <h3>✅ Animal Cadastrado com Sucesso!</h3>
-                    <p><strong>Nome:</strong> ${novoAnimal.nome}</p>
-                    <p><strong>Espécie:</strong> ${novoAnimal.especie}</p>
-                    <p><strong>Idade:</strong> ${novoAnimal.idade} ano(s)</p>
-                    <p><strong>Peso:</strong> ${novoAnimal.peso} kg</p>
-                    <p><strong>ID:</strong> ${novoAnimal.id}</p>
-                    <p><strong>Vacinado:</strong> ${novoAnimal.vacinado ? '✅ Sim' : '❌ Não'}</p>
-                    <small>✨ Total de animais cadastrados: ${Petshop.animais.length}</small>
-                </div>
-            `;
-        }, 2000);
+        resultado.innerHTML = `
+            <div class="animal-card">
+                <h3>➕ Cadastrar Novo Animal</h3>
+                <form id="form-cadastro">
+                    <label>Nome:<br><input type="text" id="nome" required></label><br>
+                    <label>Espécie:<br><input type="text" id="especie" required></label><br>
+                    <label>Ano de Nascimento:<br><input type="number" id="anoNascimento" min="1900" max="${new Date().getFullYear()}" required></label><br>
+                    <label>Peso (kg):<br><input type="number" step="0.1" id="peso" required></label><br>
+                    <button type="submit">Cadastrar</button>
+                </form>
+            </div>
+        `;
+        const form = document.getElementById('form-cadastro');
+        if (!form)
+            return;
+        form.addEventListener('submit', (ev) => {
+            ev.preventDefault();
+            const inputNome = document.getElementById('nome').value.trim();
+            const inputEspecie = document.getElementById('especie').value.trim();
+            const inputAno = parseInt(document.getElementById('anoNascimento').value, 10);
+            const inputPeso = parseFloat(document.getElementById('peso').value);
+            if (!inputNome || !inputEspecie || Number.isNaN(inputAno) || Number.isNaN(inputPeso)) {
+                alert('Preencha todos os campos corretamente.');
+                return;
+            }
+            resultado.innerHTML = `<div class="animal-card"><h3>➕ Cadastrando...</h3><p>Aguarde...</p></div>`;
+            setTimeout(() => {
+                const novoAnimal = criarAnimal(inputNome, inputEspecie, inputAno, inputPeso);
+                Petshop.animais.push(novoAnimal);
+                atualizarPainelAnimais();
+                try {
+                    saveState();
+                }
+                catch (e) { }
+                resultado.innerHTML = `
+                    <div class="animal-card">
+                        <h3>✅ Animal Cadastrado com Sucesso!</h3>
+                        <p><strong>Nome:</strong> ${novoAnimal.nome}</p>
+                        <p><strong>Espécie:</strong> ${novoAnimal.especie}</p>
+                        <p><strong>Idade:</strong> ${novoAnimal.idade} ano(s)</p>
+                        <p><strong>Peso:</strong> ${novoAnimal.peso} kg</p>
+                        <p><strong>ID:</strong> ${novoAnimal.id}</p>
+                        <p><strong>Vacinado:</strong> ${novoAnimal.vacinado ? '✅ Sim' : '❌ Não'}</p>
+                        <small>✨ Total de animais cadastrados: ${Petshop.animais.length}</small>
+                    </div>
+                `;
+            }, 1000);
+        });
     }
     Petshop.cadastrarAnimal = cadastrarAnimal;
     function mostrarEstatisticas() {
@@ -178,14 +314,17 @@ var Petshop;
     document.addEventListener('DOMContentLoaded', () => {
         const btnTipos = document.getElementById('btn-tipos');
         const btnAnimais = document.getElementById('btn-animais');
-        const btnFuncoes = document.getElementById('btn-funcoes');
-        const btnErros = document.getElementById('btn-erros');
         const btnCadastrar = document.getElementById('btn-cadastrar');
+        const btnAgendarServico = document.getElementById('btn-agendar-servico');
+        const btnListaServicos = document.getElementById('btn-lista-servicos');
         btnTipos === null || btnTipos === void 0 ? void 0 : btnTipos.addEventListener('click', mostrarTipos);
         btnAnimais === null || btnAnimais === void 0 ? void 0 : btnAnimais.addEventListener('click', mostrarAnimais);
-        btnFuncoes === null || btnFuncoes === void 0 ? void 0 : btnFuncoes.addEventListener('click', testarFuncoes);
-        btnErros === null || btnErros === void 0 ? void 0 : btnErros.addEventListener('click', mostrarErros);
         btnCadastrar === null || btnCadastrar === void 0 ? void 0 : btnCadastrar.addEventListener('click', cadastrarAnimal);
+        btnAgendarServico === null || btnAgendarServico === void 0 ? void 0 : btnAgendarServico.addEventListener('click', agendarServicoFormulario);
+        btnListaServicos === null || btnListaServicos === void 0 ? void 0 : btnListaServicos.addEventListener('click', mostrarServicos);
+        loadState();
+        atualizarPainelAnimais();
+        atualizarPainelServicos();
     });
 })(Petshop || (Petshop = {}));
 window.Petshop = window.Petshop || (typeof Petshop !== 'undefined' ? Petshop : {});
