@@ -1,8 +1,9 @@
 * {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
+
 body {
 font-family: Arial, sans-serif;
 	/* imagem de fundo principal com fallback para degradê */
@@ -30,85 +31,110 @@ font-family: Arial, sans-serif;
 		background-size: cover, cover;
   }
 }
+
 .container {
-max-width: 800px;
-margin: 0 auto;
-background: #ff9a0c;
-border-radius: 30px;
-padding: 20px;
-box-shadow: 10px 10px 8px rgb(83, 255, 4);}
+	max-width: 800px;
+	margin: 0 auto;
+	background: #ff9a0c;
+	border-radius: 30px;
+	padding: 20px;
+	box-shadow: 10px 10px 8px rgb(83, 255, 4);
+}
 
 header {
-text-align: center;
-margin-bottom: 20px;
+	text-align: center;
+	margin-bottom: 20px;
 }
-h1 {
-color: #185d05fc;
-margin-bottom: 10px;
-}
-.subtitle {
-color: #000000;
-font-size: 18px;
-}
-.cards-info {
-display: flex;
-gap: 15px;
-margin-bottom: 20px;
-}
-.card {
-flex: 1;
-background: #fbe1bb;/*Alteracao na cor*/
-padding: 15px;
-border-radius: 8px;
-text-align: center;
-}
-.card h3 {
-font-size: 14px;
-margin-bottom: 5px;
-color: #333;
-}
-.numero {
-font-size: 24px;
-font-weight: bold;
-color: #1565c0;
-}
-.area-resultados {
-background: #a9a6a6;
-padding: 20px;
-border-radius: 8px;
-border-left: 4px solid #23ff06;
-min-height: 100px;
-margin-bottom: 20px;
-}
-.botoes {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-gap: 10px;
-}
-button {
-padding: 12px;
-background: #1565c0;
-color: white;
-border: none;
-border-radius: 6px;
-cursor: pointer;
-font-size: 14px;
-}
-button:hover {
-background: #0d47a1;
-}
-.animal-card {
-background: #e8f5e8;
-padding: 15px;
-margin: 10px 0;
-border-radius: 6px;
-border-left: 4px solid #4caf50;
-}
-.erro-card {
-background: #ffebee;
-padding: 15px;
-margin: 10px 0;
-border-radius: 6px;
-border-left: 4px solid #f44336;
 
+h1 {
+	color: #185d05fc;
+	margin-bottom: 10px;
+}
+
+.subtitle {
+	color: #000000;
+	font-size: 18px;
+}
+
+.cards-info {
+	display: flex;
+	gap: 15px;
+	margin-bottom: 20px;
+}
+
+.card {
+	flex: 1;
+	background: #bbdefb;/*Alteracao na cor*/
+	padding: 15px;
+	border-radius: 8px;
+	text-align: center;
+}
+
+.card h3 {
+	font-size: 14px;
+	margin-bottom: 5px;
+	color: #333;
+}
+
+.numero {
+	font-size: 24px;
+	font-weight: bold;
+	color: #1565c0;
+}
+
+.area-resultados {
+	background: #a9a6a6;
+	padding: 20px;
+	border-radius: 8px;
+	border-left: 4px solid #23ff06;
+	min-height: 100px;
+	margin-bottom: 20px;
+}
+
+.area-resultados h3 {
+	margin: 10px 0 20px 0;
+}
+
+.area-resultados ul {
+	margin-left: 34px;
+}
+
+.area-resultados li {
+	text-transform: capitalize;
+}
+
+.botoes {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	gap: 10px;
+}
+
+button {
+	padding: 12px;
+	background: #1565c0;
+	color: white;
+	border: none;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+button:hover {
+	background: #0d47a1;
+}
+
+.animal-card {
+	background: #e8f5e8;
+	padding: 15px;
+	margin: 10px 0;
+	border-radius: 6px;
+	border-left: 4px solid #4caf50;
+}
+
+.erro-card {
+	background: #ffebee;
+	padding: 15px;
+	margin: 10px 0;
+	border-radius: 6px;
+	border-left: 4px solid #f44336;
 }
