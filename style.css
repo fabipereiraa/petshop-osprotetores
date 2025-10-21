@@ -57,7 +57,7 @@ margin-bottom: 20px;
 }
 .card {
 flex: 1;
-background: #bbdefb;/*Alteracao na cor*/
+background: #fbe1bb;/*Alteracao na cor*/
 padding: 15px;
 border-radius: 8px;
 text-align: center;
@@ -110,4 +110,5 @@ padding: 15px;
 margin: 10px 0;
 border-radius: 6px;
 border-left: 4px solid #f44336;
+
 }
